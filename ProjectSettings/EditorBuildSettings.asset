@@ -11,4 +11,49 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ContinueGameScene.unity
     guid: 91125729d0818964d9346a61a4ab14ad
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene.unity
+    guid: 756eb7e3a085cd848a38a47894a5df99
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 1.unity
+    guid: 1950f725eaab54a41bc0c7eb3c6dfeba
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 2.unity
+    guid: dee9f4898f8fbc44db54c786341c1845
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 3.unity
+    guid: d39c1330b794e46488f475a6b13402fb
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 4.unity
+    guid: e6f4016b48a4aab499521de432c5060f
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 5.unity
+    guid: e9f9658215cc5d24bb09516eb3593dad
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 6.unity
+    guid: 7e007e1105f42c14ab799d91e67a3d3c
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 7.unity
+    guid: c4e2e64a7ee7f41438eab260bc9da443
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 8.unity
+    guid: 3e93bd2ee84107e489016ece200cab15
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 9.unity
+    guid: 90f5ad28d4dd4ae4a85d88781e30f6de
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 10.unity
+    guid: e0c2792fbde6d7440b1d3c5165ed5707
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 11.unity
+    guid: 316f44e39c1db094ba9e80a3428fc0c3
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 12.unity
+    guid: 6debbaa769b454f4a9c69ec227f3a089
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 13.unity
+    guid: 107fa853b5fe6d04798f13aecd96872c
+  - enabled: 1
+    path: Assets/Scenes/SwappablePortalScene 14.unity
+    guid: 5e266f3e670634149bc1dc4d11cd2912
   m_configObjects: {}

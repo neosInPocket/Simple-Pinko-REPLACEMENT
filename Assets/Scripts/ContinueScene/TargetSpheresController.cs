@@ -36,6 +36,7 @@ public class TargetSpheresController : MonoBehaviour
 		flyingTarget.transform.position = targetSpheres[0].transform.position;
 		currentStartSphere = targetSpheres[0];
 		flyingTarget.currentStartSphere = targetSpheres[0];
+		flyingTarget.Trail.Clear();
 	}
 
 	public void SetStartVelocity()

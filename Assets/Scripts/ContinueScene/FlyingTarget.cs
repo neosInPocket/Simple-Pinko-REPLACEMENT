@@ -18,6 +18,8 @@ public class FlyingTarget : MonoBehaviour
 	[SerializeField] private float topEdge;
 	[SerializeField] private float bottomEdge;
 	[SerializeField] private float radius;
+	[SerializeField] private TrailRenderer trailRenderer;
+	public TrailRenderer Trail => trailRenderer;
 	public TargetSphere currentStartSphere { get; set; }
 	public Rigidbody2D Rigidbody2D => Rigidbody;
 	private bool oneMoreChance;
