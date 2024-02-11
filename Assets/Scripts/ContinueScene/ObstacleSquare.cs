@@ -22,6 +22,8 @@ public class ObstacleSquare : MonoBehaviour
 	public void Stop()
 	{
 		StopAllCoroutines();
+		rb.velocity = Vector2.zero;
+		rb.angularVelocity = 0;
 	}
 
 	private IEnumerator MoveRoutine()

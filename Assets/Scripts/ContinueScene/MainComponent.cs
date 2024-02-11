@@ -1,13 +1,15 @@
 using TMPro;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainComponent : MonoBehaviour
 {
 	[SerializeField] private int addScore;
-	// [SerializeField] private Tutorial tutorial;
-	// [SerializeField] private TapSource tapSource;
-	// [SerializeField] private ResultSource resultSource;
+	[SerializeField] private TrainingPhase trainingPhase;
+	[SerializeField] private WaitGamePhase waitGamePhase;
+	[SerializeField] private GameEndPhase gameEndPhase;
 	[SerializeField] private TMP_Text levelHolder;
 	[SerializeField] private string menuSceneId;
 	[SerializeField] private string gameSceneId;
@@ -15,10 +17,13 @@ public class MainComponent : MonoBehaviour
 	[SerializeField] private SquareObstaclesSpawner squareObstaclesSpawner;
 	[SerializeField] private BottomTimerPanel timer;
 	[SerializeField] private FlyingTarget flyingTarget;
+	[SerializeField] private Image progressFill;
+	[SerializeField] private TMP_Text progressText;
 	public static Vector2 SizeOfScreen;
-	private int timeAllowed => (int)(2 * Mathf.Log(SaveBehaviour.DataFile.LevelValue + 1) + 2);
-	private int rewardGemns => (int)(3 * Mathf.Log(SaveBehaviour.DataFile.LevelValue + 1 + 1) + 3 + SaveBehaviour.DataFile.LevelValue + 1);
-	private float currentTime;
+	private int timeAllowed;
+	private int maxProgressValue;
+	private int rewardGemns;
+	private int currentProgress;
 
 	private void Awake()
 	{
@@ -27,44 +32,82 @@ public class MainComponent : MonoBehaviour
 
 	private void Start()
 	{
+		timeAllowed = (int)(2 * Mathf.Log(SaveBehaviour.DataFile.LevelValue + 1) + 10);
+		maxProgressValue = (int)(2 * Mathf.Log(SaveBehaviour.DataFile.LevelValue + 1) + 2);
+		rewardGemns = (int)(3 * Mathf.Log(SaveBehaviour.DataFile.LevelValue + 1 + 1) + 3 + SaveBehaviour.DataFile.LevelValue + 1);
+
 		levelHolder.text = "LEVEL " + SaveBehaviour.DataFile.LevelValue.ToString();
 		flyingTarget.GetEventObservers(ScoreAddedHandler, OnDestroyedHandler);
-		targetSpheresController.SetInitialPositions();
+		targetSpheresController.SetVerticalPositions();
 		timer.SetTimerValues(timeAllowed, OnTimerTimeExpired);
 		squareObstaclesSpawner.Initialize();
-		squareObstaclesSpawner.StartMove();
+		RefreshProgress();
 
-		if (!SaveBehaviour.DataFile.CanPassTutorial)
+		bool canPassTutorial = SaveBehaviour.DataFile.CanPassTutorial;
+
+		if (!canPassTutorial)
 		{
-			SaveBehaviour.DataFile.CanPassTutorial = true;
-			SaveBehaviour.SetValue();
-
-			// tutorial.StartAction(OnTutorialCompleted);
+			StartTraining();
 		}
 		else
 		{
-			OnTutorialCompleted();
+			OnTrainDone();
 		}
 	}
 
-	private void OnTutorialCompleted()
+	private void OnTrainDone()
 	{
+		waitGamePhase.Enable(OnGame);
+	}
 
+	private void RefreshProgress()
+	{
+		progressFill.fillAmount = (float)currentProgress / (float)maxProgressValue;
+		progressText.text = $"{currentProgress}/{maxProgressValue}";
+	}
+
+	private void OnGame()
+	{
+		squareObstaclesSpawner.StartMove();
+		targetSpheresController.SetStartVelocity();
+		timer.StartTimer();
 	}
 
 	private void OnTimerTimeExpired()
 	{
-
+		gameEndPhase.ShowResult(true, 0);
+		squareObstaclesSpawner.StopMove();
+		targetSpheresController.Stop();
+		flyingTarget.Enabled(false);
+		timer.StopTimer();
 	}
 
 	private void ScoreAddedHandler()
 	{
+		currentProgress += 1;
+		if (currentProgress >= maxProgressValue)
+		{
+			gameEndPhase.ShowResult(false, rewardGemns);
+			squareObstaclesSpawner.StopMove();
+			targetSpheresController.Stop();
+			timer.StopTimer();
+			flyingTarget.Enabled(false);
 
+			SaveBehaviour.DataFile.LevelValue += 1;
+			SaveBehaviour.DataFile.CurrentPlayerCoins += rewardGemns;
+			SaveBehaviour.SetValue();
+		}
+
+		RefreshProgress();
 	}
 
 	private void OnDestroyedHandler()
 	{
-
+		gameEndPhase.ShowResult(false, 0);
+		squareObstaclesSpawner.StopMove();
+		targetSpheresController.Stop();
+		timer.StopTimer();
+		flyingTarget.Enabled(false);
 	}
 
 	public void Menu()
@@ -93,5 +136,13 @@ public class MainComponent : MonoBehaviour
 
 		Vector3 returnResult = or + distance * directive;
 		return returnResult;
+	}
+
+	private void StartTraining()
+	{
+		trainingPhase.StartTraining(OnTrainDone);
+
+		SaveBehaviour.DataFile.CanPassTutorial = true;
+		SaveBehaviour.SetValue();
 	}
 }

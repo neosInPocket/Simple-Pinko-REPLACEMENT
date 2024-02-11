@@ -15,20 +15,30 @@ public class FlyingTarget : MonoBehaviour
 	[SerializeField] private VisibleTextPopup visibleTextPopup;
 	[SerializeField] private float invincibilityTime;
 	[SerializeField] private Color invincibilityColor;
+	[SerializeField] private float topEdge;
+	[SerializeField] private float bottomEdge;
+	[SerializeField] private float radius;
+	public TargetSphere currentStartSphere { get; set; }
+	public Rigidbody2D Rigidbody2D => Rigidbody;
 	private bool oneMoreChance;
 	private bool invincible;
 	private Action onScoreAdded;
 	private Action onDead;
+	private float topEdgeValue;
+	private float bottomEdgeValue;
 
 	private void Awake()
 	{
 		EnhancedTouchSupport.Enable();
 		TouchSimulation.Enable();
-
 	}
 
 	private void Start()
 	{
+		var screenSize = MainComponent.SizeOfScreen;
+
+		topEdgeValue = 2 * screenSize.y * topEdge - screenSize.y;
+		bottomEdgeValue = 2 * screenSize.y * bottomEdge - screenSize.y;
 		oneMoreChance = SaveBehaviour.DataFile.StoreValues[0];
 	}
 
@@ -36,6 +46,14 @@ public class FlyingTarget : MonoBehaviour
 	{
 		onScoreAdded = scoreAddedHandler;
 		onDead = deadHandler;
+	}
+
+	private void Update()
+	{
+		if (transform.position.y >= topEdgeValue - radius || transform.position.y <= bottomEdgeValue + radius)
+		{
+			DestroySphere();
+		}
 	}
 
 	public void Enabled(bool enabled)
@@ -47,6 +65,7 @@ public class FlyingTarget : MonoBehaviour
 		else
 		{
 			OnFingerTouch.onFingerDown -= OnFingerScreenTouch;
+			Rigidbody.velocity = Vector2.zero;
 		}
 	}
 
@@ -59,6 +78,13 @@ public class FlyingTarget : MonoBehaviour
 		{
 			if (target.collider.TryGetComponent<TargetSphere>(out TargetSphere targetSphere))
 			{
+				if (targetSphere == currentStartSphere)
+				{
+					Rigidbody.velocity *= -1;
+					return;
+				}
+
+				currentStartSphere = targetSphere;
 				onScoreAdded();
 				targetSphere.OnTouchCompleted();
 			}
@@ -96,18 +122,18 @@ public class FlyingTarget : MonoBehaviour
 		}
 	}
 
-	public void DestroyTarget()
-	{
-		Renderer.enabled = false;
-		Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
-		destroyParticles.SetActive(true);
-	}
-
 	private IEnumerator Invincibility()
 	{
 		Renderer.color = invincibilityColor;
 		yield return new WaitForSeconds(invincibilityTime);
+		Renderer.color = Color.white;
 		invincible = false;
+	}
+
+	private void DestroySphere()
+	{
+		DestroyAction();
+		onDead();
 	}
 
 	private void DestroyAction()

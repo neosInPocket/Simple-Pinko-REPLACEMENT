@@ -12,7 +12,7 @@ public class TargetSphere : MonoBehaviour
 	private Vector2 screen;
 	private float yPositionValue;
 
-	private void Start()
+	private void Awake()
 	{
 		screen = MainComponent.SizeOfScreen;
 		if (yPosition == ObstacleYPosition.Top)
@@ -38,6 +38,13 @@ public class TargetSphere : MonoBehaviour
 	{
 		transform.position = new Vector2(
 			Random.Range(2 * screen.x * xPositionRange.x - screen.x, 2 * screen.x * xPositionRange.y - screen.x), yPositionValue
+			);
+	}
+
+	public void SetVerticalPositions()
+	{
+		transform.position = new Vector2(
+			0, yPositionValue
 			);
 	}
 

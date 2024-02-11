@@ -1,4 +1,6 @@
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
@@ -6,6 +8,7 @@ public class SettingsBehaviour : MonoBehaviour
 	[SerializeField] private Image musicSlider;
 	[SerializeField] private Image vfxSlider;
 	[SerializeField] private float increaseValue;
+	[SerializeField] private string gameString;
 	private MusicData currentManager;
 
 	private void Start()
@@ -57,5 +60,10 @@ public class SettingsBehaviour : MonoBehaviour
 
 		SaveBehaviour.SetValue();
 		Refresh();
+	}
+
+	public void LoadSceneGame()
+	{
+		SceneManager.LoadScene(gameString);
 	}
 }
